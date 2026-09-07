@@ -8,7 +8,7 @@ function started() {
     button.id = "newElement";
     document.body.append(button);
 
-    button.addEventListener('click', buttonClick)
+    button.addEventListener('click', buttonClick);
 }
 
 // клик по кнопке
@@ -26,7 +26,7 @@ function genereteId() {
     let countId = 0;
 
     return function () {
-        return countId++
+        return countId++;
     }
 }
 
@@ -38,16 +38,16 @@ function createValue(idElement) {
     const inputGramm = document.createElement('input');
     const inputPrice = document.createElement('input');
 
-    createInput(inputGramm, "inputGramm", idElement)
-    createInput(inputPrice, "inputPrice", idElement)
+    createInput(inputGramm, "gramm", idElement);
+    createInput(inputPrice, "price", idElement);
 
     document.body.append(element);
 
     element.append(inputGramm);
     element.append(inputPrice);
 
-    inputGramm.addEventListener("input", calculator)
-    inputPrice.addEventListener("input", calculator)
+    inputGramm.addEventListener("input", calculator);
+    inputPrice.addEventListener("input", calculator);
 }
 
 const values = new Map();
@@ -55,9 +55,9 @@ const values = new Map();
 // наполнение полей ввода
 function createInput(inputName, name, id) {
     inputName.type = "number";
-    inputName.name = name;
+    inputName.name = "input_" + name;
     inputName.value = "0";
-    inputName.dataset.id = id;
+    inputName.dataset[name + "Id"] = id;
     inputName.min = 0;
 
     values.set(id, {
@@ -70,44 +70,57 @@ function createInput(inputName, name, id) {
 function createSum(idElement) {
     const element = document.getElementById(idElement);
     const text = document.createElement('span');
-    text.dataset.id = idElement
+    text.dataset.id = idElement;
     text.textContent = "0";
     element.append(text);
 }
 
 // Лучший выбор 
 
-
-
 function calculator(event) {
-    const element = document.getElementById(event.currentTarget.dataset.id);
-    const gramm = element.querySelector('[name="inputGramm"]').value;
-    const price = element.querySelector('[name="inputPrice"]').value;
+    const element = event.currentTarget.parentElement;
+    const id = element.id
+    const gramm = element.querySelector('[name="input_gramm"]').value;
+    const price = element.querySelector('[name="input_price"]').value;
     const result = price / gramm * 100;
     const text = element.getElementsByTagName("span")[0];
 
-    text.textContent = result
+    text.textContent = result;
 
-    values.set(event.currentTarget.dataset.id, {
+    values.set(id, {
         gramm,
         price,
         result
     });
 
     findMin();
-
 }
 
 function findMin() {
     let min = Infinity;
-    let minId = null;
+    const minId = [];
 
     for (const [id, data] of values) {
         if (data.result < min) {
             min = data.result;
-            minId = id;
+            minId.length = 0;
+            minId.push(id);
+            console.log(data.result)
+        } else if (data.result === min && data.result !== Infinity) {
+            minId.push(id);
+        } else {
+            removeResultColor(id)
         }
     }
 
-    console.log(minId, min);
+    bestResultColor(minId)
+}
+
+function bestResultColor(id) {
+    id.forEach((id) => {
+        document.querySelector(`[data-id="${id}"]`).style.color = 'blue';
+    })
+}
+function removeResultColor(id) {
+    document.querySelector(`[data-id="${id}"]`).style.color = 'black';
 }
