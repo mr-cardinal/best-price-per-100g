@@ -98,7 +98,7 @@ function deleteProduct(event) {
 
     if (index !== -1) {
         products.splice(index, 1);
-        
+
         saveProducts(products);
         renderUpdatedProducts();
     }
@@ -232,7 +232,7 @@ function createValue(idElement) {
     createInput(inputGramm, "gramm", idElement);
     createInput(inputPrice, "price", idElement);
 
-    document.body.append(element);
+    document.body.prepend(element);
 
     element.append(inputGramm);
     element.append(inputPrice);
@@ -296,7 +296,6 @@ function findMin() {
             min = data.result;
             minId.length = 0;
             minId.push(id);
-            console.log(data.result)
         } else if (data.result === min && data.result !== Infinity) {
             minId.push(id);
         } else {
