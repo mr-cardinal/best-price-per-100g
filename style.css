@@ -1,0 +1,34 @@
+.product-add {
+	padding: 32px 16px;
+}
+
+.container {
+	/* width: min(100%, 720px); */
+	margin: 0 auto;
+}
+
+.product-add__title {
+	margin-bottom: 24px;
+}
+
+.product-add__form {
+	display: flex;
+	gap: 16px;
+}
+.product-list__container{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.product{
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.product__name{
+    max-width: 200px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,4 +1,6 @@
 document.body.onload = started;
+const productsContainer = document.getElementById("product-container");
+const products = getProducts();
 
 // инициализация
 function started() {
@@ -6,32 +8,199 @@ function started() {
     button.textContent = 'Нажми меня';
     button.className = 'my-button';
     button.id = "newElement";
-    document.body.append(button);
-
+    document.body.prepend(button);
     button.addEventListener('click', buttonClick);
 
-    const products = getProducts();
+    document.getElementById("add-product-button").addEventListener('click', addProduct);
+    productsContainer.addEventListener('click', deleteProduct);
+
     if (products.length > 0 && products !== null) {
-        products.forEach((product) => {
-            element = document.createElement('div');
-            element.id = product.id;
-            element.className = "product";
-            const productHtml = `
-                        <div class="product__rank"></div>
-                        <div class="product__photo"></div>
-                        <div class="product__name">${product.name}</div>
-                        <div class="product__unit">${product.quantity.unit}</div>
-                        <div class="product__price">${product.price}</div>
-                        <div class="product__unitPrice"></div>
-                        <div class="product__isBest"></div>
-                        <div class="product__delite"></div>
-                    
-                `;
-            element.innerHTML = productHtml;
-            document.getElementById("products_container").insertAdjacentElement('afterbegin', element);
-        });
+        renderProducts(products);
+    } else {
+        renderProducts(productsStart);
     }
 }
+
+function addProduct() {
+    event.preventDefault();
+
+    const name = document.getElementById("product-name").value;
+    const quantityValue = document.getElementById("product-quantity").value;
+    const quantityUnit = document.getElementById("product-unit").value;
+    const price = document.getElementById("product-price").value;
+    const photo = document.getElementById("product-photo").files[0];
+
+    const newProduct = {
+        id: crypto.randomUUID(),
+        name: name,
+        quantity: {
+            value: parseFloat(quantityValue),
+            unit: quantityUnit,
+
+            normalizedValue: parseFloat(quantityValue),
+            normalizedUnit: "g"
+        },
+        price: parseFloat(price),
+        photo: photo
+    };
+
+    products.push(newProduct);
+    saveProducts(products);
+    renderUpdatedProducts();
+}
+
+function createProductElement(product) {
+    const element = document.createElement('div');
+    element.className = 'product';
+    element.dataset.id = product.id;
+
+    const productHtml = `
+        <div class="product__rank"></div>
+        <div class="product__photo"></div>
+        <div class="product__name">${product.name}</div>
+        <div class="product__unit">${product.quantity.value} ${product.quantity.unit}</div>
+        <div class="product__price">${product.price}</div>
+        <div class="product__unitPrice"></div>
+        <div class="product__isBest"></div>
+        <div class="product__delite">
+            <button class="product__delete-btn">Удалить</button>
+        </div>
+    `;
+
+    element.innerHTML = productHtml;
+
+    return element;
+}
+
+function renderProducts(products) {
+    const fragment = document.createDocumentFragment();
+
+    products.forEach((product) => {
+        fragment.appendChild(createProductElement(product));
+    });
+
+    productsContainer.appendChild(fragment);
+}
+
+function renderUpdatedProducts() {
+    productsContainer.innerHTML = '';
+    renderProducts(products);
+}
+
+function deleteProduct(event) {
+    const button = event.target.closest('.product__delete-btn');
+    if (!button) return;
+
+    const productElement = button.closest('.product');
+    const productId = productElement.dataset.id;
+
+    index = products.indexOf(products.find(product => product.id === productId));
+
+    if (index !== -1) {
+        products.splice(index, 1);
+        
+        saveProducts(products);
+        renderUpdatedProducts();
+    }
+
+}
+
+const productsStart = [
+    {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Греча от мироторг",
+        photo: null,
+
+        quantity: {
+            value: 800,
+            unit: "грамм",
+            type: "Масса",
+
+            normalizedValue: 800,
+            normalizedUnit: "g"
+        },
+
+        price: 120,
+
+        createdAt: Date.now()
+    },
+
+    {
+        id: "550e8400-e29b-41d4-a716-446655440001",
+        name: "Греча от мироторг 2",
+        photo: null,
+
+        quantity: {
+            value: 600,
+            unit: "грамм",
+            type: "Масса",
+
+            normalizedValue: 600,
+            normalizedUnit: "g"
+        },
+
+        price: 620,
+
+        createdAt: Date.now()
+    },
+
+    {
+        id: "550e8400-e29b-41d4-a716-446655440003",
+        name: "Греча от мироторг 3",
+        photo: null,
+
+        quantity: {
+            value: 50,
+            unit: "грамм",
+            type: "Масса",
+
+            normalizedValue: 50,
+            normalizedUnit: "g"
+        },
+
+        price: 20,
+
+        createdAt: Date.now()
+    },
+
+    {
+        id: "550e8400-e29b-41d4-a716-446655440004",
+        name: "Греча от мироторг 4",
+        photo: null,
+
+        quantity: {
+            value: 680,
+            unit: "грамм",
+            type: "Масса",
+
+            normalizedValue: 680,
+            normalizedUnit: "g"
+        },
+
+        price: 520,
+
+        createdAt: Date.now()
+    }
+];
+
+
+function getProducts() {
+    return JSON.parse(
+        localStorage.getItem('products') || '[]'
+    );
+}
+
+function saveProducts(products) {
+    localStorage.setItem(
+        'products',
+        JSON.stringify(products)
+    );
+}
+
+
+
+
+
 
 // клик по кнопке
 function buttonClick() {
@@ -73,68 +242,6 @@ function createValue(idElement) {
 }
 
 const values = new Map();
-const products = [
-    {
-        id: "550e8400-e29b-41d4-a716-446655440000",
-        name: "Греча от мироторг",
-        photo: null,
-
-        quantity: {
-            value: 800,
-            unit: "грамм",
-            type: "Масса"
-        },
-
-        price: 120,
-
-        createdAt: Date.now()
-    },
-    {
-        id: "550e8400-e29b-41d4-a716-446655440001",
-        name: "Греча от мироторг 2",
-        photo: null,
-
-        quantity: {
-            value: 600,
-            unit: "грамм",
-            type: "Масса"
-        },
-
-        price: 620,
-
-        createdAt: Date.now()
-    },
-    {
-        id: "550e8400-e29b-41d4-a716-446655440003",
-        name: "Греча от мироторг 3",
-        photo: null,
-
-        quantity: {
-            value: 50,
-            unit: "грамм",
-            type: "Масса"
-        },
-
-        price: 20,
-
-        createdAt: Date.now()
-    },
-    {
-        id: "550e8400-e29b-41d4-a716-446655440004",
-        name: "Греча от мироторг 4",
-        photo: null,
-
-        quantity: {
-            value: 680,
-            unit: "грамм",
-            type: "Масса"
-        },
-
-        price: 520,
-
-        createdAt: Date.now()
-    }
-];
 
 // наполнение полей ввода
 function createInput(inputName, name, id) {
@@ -209,15 +316,3 @@ function removeResultColor(id) {
     document.querySelector(`[data-id="${id}"]`).style.color = 'black';
 }
 
-function getProducts() {
-    return JSON.parse(
-        localStorage.getItem('products') || '[]'
-    );
-}
-
-function saveProducts(products) {
-    localStorage.setItem(
-        'products',
-        JSON.stringify(products)
-    );
-}

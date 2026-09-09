@@ -5,13 +5,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- <link rel="stylesheet" href="./zero.css"> -->
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-    <input type="password" name="12" id="12">
+    <section class="product-add">
+        <div class="container">
+            <h2 class="product-add__title">Добавить продукт</h2>
 
-    <section id="products_container">
-        
+            <form id="product-create" class="product-add__form">
+                <div>
+                    <label for="product-name">Название продукта:</label>
+                    <input type="text" id="product-name" placeholder="Например, гречака мираторг" name="product-name"
+                        required value="Греча от мироторг">
+                </div>
+                <div>
+                    <label for="product-quantity">Количество:</label>
+                    <input type="number" id="product-quantity" placeholder="800" name="product-quantity" required
+                        value="800">
+                </div>
+                <div>
+                    <label for="product-unit">Единица измерения:</label>
+
+                    <select id="product-unit" name="product-unit" required>
+                        <option value="">Выберите единицу измерения</option>
+
+                        <optgroup label="Масса">
+                            <option value="г" selected>г</option>
+                            <option value="кг" disabled>кг</option>
+                        </optgroup>
+                        <optgroup label="Объем">
+                            <option value="мл" disabled>мл</option>
+                            <option value="л" disabled>л</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div>
+                    <label for="product-price">Цена:</label>
+                    <input type="number" id="product-price" placeholder="345.79" name="product-price" required
+                        value="345.79">
+                </div>
+
+                <div>
+                    <label for="product-photo">Фото продукта:</label>
+                    <input type="file" id="product-photo" name="product-photo">
+                </div>
+
+                <button id="add-product-button" t>Добавить продукт</button>
+            </form>
+        </div>
+    </section>
+
+
+    <section class="product-list">
+        <div class="container">
+            <h2 class="product-add__title">Список продуктов</h2>
+            <div id="product-container" class="product-list__container"></div>
+        </div>
     </section>
     <script src="./script.js"></script>
 </body>
